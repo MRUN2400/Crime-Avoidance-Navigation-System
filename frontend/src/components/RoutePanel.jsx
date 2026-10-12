@@ -196,52 +196,86 @@ export default function RoutePanel({
           <span className="section-title"><Navigation size={15} color="#3b82f6" /> Navigation Planner</span>
         </div>
 
-        {/* Starting Location */}
-        <div className="input-group" ref={srcRef}>
-          <div className="input-icon-wrapper">
-            <MapPin size={16} color="#22c55e" />
-          </div>
-          <input
-            className="input-field"
-            placeholder="From: e.g. Bandra Station, Mumbai"
-            value={source}
-            onChange={(e) => { setSource(e.target.value); setShowSrcSuggestions(true); }}
-            onFocus={() => setShowSrcSuggestions(true)}
-            onKeyDown={(e) => e.key === "Enter" && calculateRoute()}
-          />
-          {showSrcSuggestions && (
-            <div className="suggestions-dropdown">
-              {POPULAR_LOCATIONS.filter(l => l.toLowerCase().includes(source.toLowerCase())).map((loc, idx) => (
-                <div key={idx} className="suggestion-item" onClick={() => { setSource(loc); setShowSrcSuggestions(false); }}>
-                  <MapPin size={12} color="#94a3b8" /> {loc}
-                </div>
-              ))}
+        {/* Origin & Destination Inputs with Swap button */}
+        <div className="journey-inputs-container" style={{ position: "relative", display: "flex", flexDirection: "column", gap: 8 }}>
+          {/* Starting Location */}
+          <div className="input-group" ref={srcRef} style={{ margin: 0 }}>
+            <div className="input-icon-wrapper">
+              <MapPin size={16} color="#3b82f6" />
             </div>
-          )}
-        </div>
+            <input
+              className="input-field"
+              placeholder="Origin: e.g. Powai Junction, Mumbai"
+              value={source}
+              onChange={(e) => { setSource(e.target.value); setShowSrcSuggestions(true); }}
+              onFocus={() => setShowSrcSuggestions(true)}
+              onKeyDown={(e) => e.key === "Enter" && calculateRoute()}
+            />
+            {showSrcSuggestions && (
+              <div className="suggestions-dropdown">
+                {POPULAR_LOCATIONS.filter(l => l.toLowerCase().includes(source.toLowerCase())).map((loc, idx) => (
+                  <div key={idx} className="suggestion-item" onClick={() => { setSource(loc); setShowSrcSuggestions(false); }}>
+                    <MapPin size={12} color="#94a3b8" /> {loc}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-        {/* Destination Location */}
-        <div className="input-group" ref={dstRef}>
-          <div className="input-icon-wrapper">
-            <Navigation size={16} color="#ef4444" />
+          {/* Swap Button Floating between the two inputs */}
+          <div style={{ display: "flex", justifyContent: "flex-end", paddingRight: 8, margin: "-4px 0" }}>
+            <button
+              type="button"
+              className="swap-locations-btn"
+              onClick={() => {
+                const temp = source;
+                setSource(destination);
+                setDestination(temp);
+              }}
+              title="Swap origin and destination"
+              style={{
+                background: "#1e293b",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 6,
+                color: "#94a3b8",
+                width: 28,
+                height: 24,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/>
+              </svg>
+            </button>
           </div>
-          <input
-            className="input-field"
-            placeholder="To: e.g. Andheri West, Mumbai"
-            value={destination}
-            onChange={(e) => { setDestination(e.target.value); setShowDstSuggestions(true); }}
-            onFocus={() => setShowDstSuggestions(true)}
-            onKeyDown={(e) => e.key === "Enter" && calculateRoute()}
-          />
-          {showDstSuggestions && (
-            <div className="suggestions-dropdown">
-              {POPULAR_LOCATIONS.filter(l => l.toLowerCase().includes(destination.toLowerCase())).map((loc, idx) => (
-                <div key={idx} className="suggestion-item" onClick={() => { setDestination(loc); setShowDstSuggestions(false); }}>
-                  <Navigation size={12} color="#94a3b8" /> {loc}
-                </div>
-              ))}
+
+          {/* Destination Location */}
+          <div className="input-group" ref={dstRef} style={{ margin: 0 }}>
+            <div className="input-icon-wrapper">
+              <Navigation size={16} color="#ef4444" />
             </div>
-          )}
+            <input
+              className="input-field"
+              placeholder="Destination: e.g. IIT Bombay, Mumbai"
+              value={destination}
+              onChange={(e) => { setDestination(e.target.value); setShowDstSuggestions(true); }}
+              onFocus={() => setShowDstSuggestions(true)}
+              onKeyDown={(e) => e.key === "Enter" && calculateRoute()}
+            />
+            {showDstSuggestions && (
+              <div className="suggestions-dropdown">
+                {POPULAR_LOCATIONS.filter(l => l.toLowerCase().includes(destination.toLowerCase())).map((loc, idx) => (
+                  <div key={idx} className="suggestion-item" onClick={() => { setDestination(loc); setShowDstSuggestions(false); }}>
+                    <Navigation size={12} color="#94a3b8" /> {loc}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Travel Mode Pills */}
